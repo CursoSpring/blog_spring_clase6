@@ -203,6 +203,21 @@
 			<version>2.2</version>
 		</dependency>
 
+		<!-- Libreria para el pool de conexiones -->
+       <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+        
+		<!-- Libreria para postgres -->        
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+        </dependency>
+        
+
 
 
 	</dependencies>

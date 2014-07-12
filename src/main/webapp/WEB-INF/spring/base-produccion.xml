@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+	<!-- <jdbc:embedded-database id="dataSource" type="HSQL">
+		<jdbc:script location="classpath:estructura-base.sql" />
+		<jdbc:script location="classpath:datos-prueba.sql" />
+	</jdbc:embedded-database> -->
+	
+	<!-- Esta etiqueta sirve para poder leer variables de entorno en un xml de spring
+	Para lo siguiente: 
+	propiedad jdbcUrl
+	
+	${OPENSHIFT_POSTGRESQL_DB_HOST}
+	${OPENSHIFT_POSTGRESQL_DB_PORT}
+	
+	 -->
+	<context:property-placeholder/>
+	
+	
+	<!-- Pool de conexiones -->
+	<bean id="dataSource" class = "com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="org.postgresql.Driver" />
+        <property name="jdbcUrl" value="jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/springblog"/>
+        <property name="user" value="admin5jdgscs" />
+        <property name="password" value="g7dHBtFi-D8Y" /> 
+        <property name="acquireIncrement" value="3" />
+        <property name="minPoolSize" value="3" />
+        <property name="maxPoolSize" value="15" />
+        <property name="maxIdleTime" value="100" />
+	</bean>
+	
+	
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="org.upiita.spring.entidades" />
+		<property name="hibernateProperties">
+			<map>
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+				<entry key="hibernate.show_sql" value="false" />
+			</map>
+		</property>
+	</bean>
+</beans>

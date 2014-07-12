@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- Registramos una instancia en el contexto de spring de la clase LoginFallidoManejador
+		
+		Ponemos la url de error, la url a la que vva a dirijir en caso de error
+		<property name="defaultFailureUrl" value="/login?errorLogin=true"></property>
+	 -->
+	<bean id="loginFallido" class="org.upiita.spring.seguridad.LoginFallidoManejador">
+		<property name="defaultFailureUrl" value="/login?errorLogin=true"></property>
+	</bean>
+
+	<!-- Para el caso de login secces, en este caso no ponemos property ya que toma la url succes bien
+		 en el anterior la tuvimos que poner ya que no toma la url erronea y la tenemos que poner manualmente 
+	 -->
+	<bean id="loginExitoso" class="org.upiita.spring.seguridad.LoginExitosoManejador">
+	</bean>
+
+
+
+	<!-- 
+		auto-config="true" crea una forma para login
+		use-expressions="true" 
+	-->
+	<security:http use-expressions="true">
+		<!--
+		 Etiqueta para protejer url (se pueden poner tantas como sea y se pueden poner regex en pettern), 
+		 access="ROLE_ADMIN" define quienes pueden ver la URL, si no se pone el param access, la url estara para todos.
+		-->
+		<security:intercept-url pattern="/blog/*/editar*" access="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')"/>
+		<security:intercept-url pattern="/blog/*/guardar*" access="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')"/>
+		<security:intercept-url pattern="/usuario/*/editar*" access="hasAnyRole('ROLE_ADMIN')"/>
+		<security:intercept-url pattern="/usuario/*/guardar*" access="hasAnyRole('ROLE_ADMIN')"/>
+		<!--
+			Para renombrar los parametros default de url, useuario y password
+			Con login-page="/login"   Decimos la url de a donde regresar
+			
+			default-target-url="/blog/1"  es la url a la que nos envia el login si entramos 
+			directamente a login, sin psar por una url protegida
+			
+			//para lo de login fallido
+			authentication-failure-handler-ref="loginFallido"
+		-->
+		<security:form-login
+			login-page="/login"  
+			login-processing-url="/autentificar" 
+			username-parameter="email" 
+			password-parameter="password"
+			default-target-url="/blog/1"
+			authentication-failure-url ="/login?errorLogin=true"
+			authentication-failure-handler-ref="loginFallido"
+			authentication-success-handler-ref="loginExitoso"
+		/>
+		
+		<!--
+			Para sobrescribir el nombre original del logaut
+			logout-url="/logaut"
+			
+			Url tras cerrar exitosamente la session
+			logout-success-url="/blog/1"
+		-->
+		<security:logout
+			logout-url="/logaut"
+			logout-success-url="/blog/1"
+		/>
+		
+		<security:access-denied-handler error-page="/error-403"/>
+		
+	</security:http>
+	
+	<!-- 
+		erase-credentials="true" => no tener el password en session, por seguridad
+		en false si tenemos el pass, esto lo pedemos ver en la consola, lo recomendable 
+		es tener erase-credentials="true"
+	 -->
+	<security:authentication-manager erase-credentials="false">
+		<security:authentication-provider>
+			<security:user-service>
+				<!-- Damos de alta un usuario, se puede replicatr este tag para poner varios usuarios -->
+				<security:user name="juan@email.com" password="1234" authorities="ROLE_ADMIN"/>
+				<security:user name="pepe@email.com" password="1234" authorities="ROLE_EDITOR"/>
+			</security:user-service>
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>

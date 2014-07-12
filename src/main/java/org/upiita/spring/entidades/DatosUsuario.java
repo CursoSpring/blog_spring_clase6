@@ -25,7 +25,7 @@ public class DatosUsuario {
 	@Column(name = "fecha_registro")
 	private Date fechaRegistro;
 	
-	//En la entidad que NO es dueña va la propiedad mappedBy
+	//En la entidad que NO es duena va la propiedad mappedBy
 	//mappedByse llena con el nombre de la propiedad o atributo (java) de la otra calse 
 	//con la que estamos mapeando a esta clase
 	@OneToOne(mappedBy="datosUsuario")

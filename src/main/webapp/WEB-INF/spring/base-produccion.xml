@@ -19,6 +19,10 @@
 	${OPENSHIFT_POSTGRESQL_DB_HOST}
 	${OPENSHIFT_POSTGRESQL_DB_PORT}
 	
+	
+	
+		NOTA: EN XML ${} => VARIABLE DE ENTORNO
+	
 	 -->
 	<context:property-placeholder/>
 	
@@ -27,8 +31,8 @@
 	<bean id="dataSource" class = "com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="org.postgresql.Driver" />
         <property name="jdbcUrl" value="jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/springblog"/>
-        <property name="user" value="admin5jdgscs" />
-        <property name="password" value="g7dHBtFi-D8Y" /> 
+        <property name="user" value="${APP_DB_USUARIO}" />
+        <property name="password" value="${APP_DB_PASSWORD}" /> 
         <property name="acquireIncrement" value="3" />
         <property name="minPoolSize" value="3" />
         <property name="maxPoolSize" value="15" />

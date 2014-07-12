@@ -9,8 +9,12 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
+	<!-- Etiqueta para leer variables de entorno -->
+	<context:property-placeholder/>
 
-	<import resource="base-produccion.xml"/>
+	<!-- leemos una variable de entorno que se llama APP_AMBIENTE el :desarrollo es
+	un valor por default para la variable -->
+	<import resource="base-${APP_AMBIENTE:desarrollo}.xml"/>
 
 	<!-- Le dice a srping donde (bajo que paquete) buscar clases con anotaciones 
 		spring -->
